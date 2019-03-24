@@ -17,7 +17,7 @@ public class GameMaster : Singleton<GameMaster>
 
     protected GameMaster() { }
 
-    void Start()
+    private void Start()
     {
         for (int i = 0; i < SamplesCount; i++)
         {
