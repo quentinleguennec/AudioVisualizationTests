@@ -11,6 +11,9 @@ public class AudioPeer : Singleton<AudioPeer>
     public float[] FrequencyBandsBuffer { get; private set; } = new float[GameMaster.FrequencyBandsCount];
     public float[] FrequencyBandsHighest { get; private set; } = new float[GameMaster.FrequencyBandsCount];
 
+    private float amplitudeBuffer = 0f;
+    private float amplitudeHighest = 0f;
+
     private AudioSource audioSource;
 
 
@@ -21,23 +24,29 @@ public class AudioPeer : Singleton<AudioPeer>
         audioSource = GetComponent<AudioSource>();
     }
 
-    private void Start()
-    {
-        for (int i = 0; i < FrequencyBandsHighest.Length; i++)
-        {
-            FrequencyBandsHighest[i] = 1f;
-        }
-    }
-
     private void Update()
     {
         ComputeSamples();
         ComputeFrequencyBands();
+        ComputeAmplitude();
     }
 
     private void ComputeSamples()
     {
         audioSource.GetSpectrumData(Samples, 0, fftWindowMode);
+    }
+
+    private void ComputeAmplitude()
+    {
+        amplitudeBuffer = 0f;
+        for (int i = 0; i < GameMaster.FrequencyBandsCount; i++)
+        {
+            amplitudeBuffer += GetNormalizedBandValue(i);
+        }
+        if (amplitudeBuffer > amplitudeHighest)
+        {
+            amplitudeHighest = amplitudeBuffer;
+        }
     }
 
     private void ComputeFrequencyBands()
@@ -80,6 +89,8 @@ public class AudioPeer : Singleton<AudioPeer>
         }
     }
 
-    public float GetNormalizedBandValue(int bandIndex) => FrequencyBandsBuffer[bandIndex] / FrequencyBandsHighest[bandIndex];
+    public float GetNormalizedBandValue(int bandIndex) => FrequencyBandsBuffer[bandIndex] / (FrequencyBandsHighest[bandIndex] == 0f ? 1f : FrequencyBandsHighest[bandIndex]);
+    public float GetNormalizedAmplitude() => amplitudeBuffer / (amplitudeHighest == 0f ? 1f : amplitudeHighest);
+    public float GetAmplitude() => amplitudeBuffer;
       
 }

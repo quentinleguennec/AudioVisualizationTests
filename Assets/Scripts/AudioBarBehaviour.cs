@@ -26,6 +26,5 @@ public class AudioBarBehaviour : MonoBehaviour
         transform.localScale = new Vector3(initialScale.x, initialScale.y + BandValue * HeightRatio, initialScale.z);
         transform.position = new Vector3(transform.position.x, initialPosition.y + 0.5f * BandValue * HeightRatio, transform.position.z);
         material.SetColor("_EmissionColor", Color.white * BandValue);
-        if (bandIndex == 1) Debug.Log(Color.white * BandValue);
     }
 }
