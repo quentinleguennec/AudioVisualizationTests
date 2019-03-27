@@ -41,8 +41,10 @@ public class AudioPeer : Singleton<AudioPeer>
         amplitudeBuffer = 0f;
         for (int i = 0; i < GameMaster.FrequencyBandsCount; i++)
         {
-            amplitudeBuffer += GetNormalizedBandValue(i);
+            //amplitudeBuffer += GetNormalizedBandValue(i);
+            amplitudeBuffer += FrequencyBandsBuffer[i];
         }
+        amplitudeBuffer /= GameMaster.FrequencyBandsCount;
         if (amplitudeBuffer > amplitudeHighest)
         {
             amplitudeHighest = amplitudeBuffer;
